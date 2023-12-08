@@ -299,6 +299,14 @@ function readGamepad() {
     }
 }
 
+document.addEventListener('touchstart', function(event) {
+	event.preventDefault();
+	if (frog.onPad) {
+		frog.velocityY = frog.jumpPower;
+		frog.onPad = false; // The frog is no longer on a lily pad
+	}
+}
+
 var frogImage = new Image();
         frogImage.src = 'frog.png';
 
