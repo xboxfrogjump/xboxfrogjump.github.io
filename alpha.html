@@ -31,12 +31,7 @@
 <body>
     <div id="score">Score: 0</div>
     <button id="replayButton" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" onclick="doReplay()">Replay</button>
-	<button id="musicToggle">Toggle Music</button>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
-	<audio id="backgroundMusic" loop>
-    <source src="oceanlanes_royaltyfree.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
     <script>
 var canvas = document.getElementById('gameCanvas');
 var ctx = canvas.getContext('2d');
@@ -184,11 +179,6 @@ function gameOver() {
     ctx.fillText('Press Space or A to Jump', canvas.width / 2 - 70, canvas.height / 5);
 	
     document.getElementById('replayButton').style.display = 'block';
-	// Reset the music
-    var backgroundMusic = document.getElementById('backgroundMusic');
-    backgroundMusic.pause();
-    backgroundMusic.currentTime = 0;
-    musicStarted = false;
 }
 
 // Function to update the score display
@@ -201,12 +191,6 @@ document.addEventListener('keypress', function(event) {
     if (event.code === 'Space' && frog.onPad) {
         frog.velocityY = frog.jumpPower;
         frog.onPad = false; // The frog is no longer on a lily pad
-		
-		if (!musicStarted) {
-            var backgroundMusic = document.getElementById('backgroundMusic');
-            backgroundMusic.play();
-            musicStarted = true;
-        }
     }
 });
 
@@ -241,15 +225,6 @@ function doReplay(){
     requestAnimationFrame(updateGame);
 }
 
-document.getElementById('musicToggle').addEventListener('click', function() {
-    var backgroundMusic = document.getElementById('backgroundMusic');
-    if (backgroundMusic.paused) {
-        backgroundMusic.play();
-    } else {
-        backgroundMusic.pause();
-    }
-});
-
 window.addEventListener("gamepadconnected", function(e) {
     console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
                 e.gamepad.index, e.gamepad.id,
@@ -278,12 +253,6 @@ function readGamepad() {
 			if (frog.onPad) {
 				frog.velocityY = frog.jumpPower;
 				frog.onPad = false; // The frog is no longer on a lily pad
-		
-				if (!musicStarted) {
-					var backgroundMusic = document.getElementById('backgroundMusic');
-					backgroundMusic.play();
-					musicStarted = true;
-				}
 			}
         }
 		if (gamepad.buttons[1].pressed) {
