@@ -299,7 +299,8 @@ function readGamepad() {
     }
 }
 
-document.addEventListener('touchstart', function(event) {
+var thecanvas = document.getElementById('gameCanvas');
+thecanvas.addEventListener('touchstart', function(event) {
 	event.preventDefault();
 	if (frog.onPad) {
 		frog.velocityY = frog.jumpPower;
