@@ -103,8 +103,12 @@ function drawFrog() {
 // Function to draw lily pads
 function drawLilyPads() {
     lilyPads.forEach(function(pad) {
-        ctx.fillStyle = 'brown';
+		if (lilyPadImage.complete) {
+            ctx.drawImage(lilyPadImage, pad.x, pad.y, pad.width, pad.height);
+        } else {
+        ctx.fillStyle = 'green';
         ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
+		}
     });
 }
 
@@ -308,8 +312,11 @@ thecanvas.addEventListener('touchstart', function(event) {
 	}
 }, { passive: false });
 
+var lilyPadImage = new Image();
+lilyPadImage.src = 'lilyPad.png';
+
 var frogImage = new Image();
-        frogImage.src = 'frog.png';
+frogImage.src = 'frog.png';
 
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
