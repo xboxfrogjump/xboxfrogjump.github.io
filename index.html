@@ -64,6 +64,18 @@ var lilyPads = [{
 var gameRunning = true;
 var groundLevel = canvas.height - 100; // y position for the lily pads
 
+var backgroundSpeed = 1.5; // Adjust this speed for parallax effect
+var backgroundX = 0; // Horizontal position of the background
+
+var cloudSpeed1 = 0.5;
+var cloudX1 = 0;
+
+var cloudSpeed2 = 1;
+var cloudX2 = 0;
+
+var cloudSpeed3 = 2;
+var cloudX3 = 0;
+
 // Function to add new lily pads at random intervals
 function addLilyPad() {
     var minDistance = 175; // Minimum distance to the next lily pad
@@ -120,6 +132,28 @@ function checkCollision(rect1, rect2) {
            rect1.y < rect2.y + rect2.height;
 }
 
+function draw() {
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the background
+    ctx.drawImage(backgroundImage, backgroundX, 0);
+    ctx.drawImage(backgroundImage, backgroundX + backgroundImage.width, 0); // Draw a second image to create a seamless loop
+	
+	// Draw each cloud layer
+    drawLayer(cloudLayer1, cloudX1);
+    drawLayer(cloudLayer2, cloudX2);
+    drawLayer(cloudLayer3, cloudX3);
+
+}
+
+function drawLayer(layer, layerX) {
+    if (layer.complete) {
+        ctx.drawImage(layer, layerX, 0);
+        ctx.drawImage(layer, layerX + layer.width, 0);
+    }
+}
+
 // Function to update game state
 function updateGame() {
     if (!gameRunning) {
@@ -129,6 +163,24 @@ function updateGame() {
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw background
+    backgroundX -= backgroundSpeed;
+
+    // Repeat the background
+    if (backgroundX <= -backgroundImage.width) {
+        backgroundX = 0;
+    }
+    // Update cloud positions
+    cloudX1 -= cloudSpeed1;
+    cloudX2 -= cloudSpeed2;
+    cloudX3 -= cloudSpeed3;
+
+    // Repeat each cloud layer
+    if (cloudX1 <= -cloudLayer1.width) cloudX1 = 0;
+    if (cloudX2 <= -cloudLayer2.width) cloudX2 = 0;
+    if (cloudX3 <= -cloudLayer3.width) cloudX3 = 0;
+	draw();
 
     // Add a new lily pad if needed
     addLilyPad();
@@ -317,6 +369,15 @@ lilyPadImage.src = 'lilyPad.png';
 
 var frogImage = new Image();
 frogImage.src = 'frog.png';
+
+var cloudLayer1 = new Image();
+cloudLayer1.src = 'L1.png';
+
+var cloudLayer2 = new Image();
+cloudLayer2.src = 'L2.png';
+
+var cloudLayer3 = new Image();
+cloudLayer3.src = 'L3.png';
 
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
