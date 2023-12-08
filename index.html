@@ -305,7 +305,7 @@ document.addEventListener('touchstart', function(event) {
 		frog.velocityY = frog.jumpPower;
 		frog.onPad = false; // The frog is no longer on a lily pad
 	}
-}
+}, { passive: false });
 
 var frogImage = new Image();
         frogImage.src = 'frog.png';
