@@ -139,7 +139,11 @@
                 if (gamepad) {
                     // Example: Check if the first button (usually the 'A' button) is pressed
                     if (gamepad.buttons[0].pressed) {
-                        jump();
+                        if (state === "lobby") {
+                            socket.emit('readyUp');
+                        } else if (state === "game") {
+                            jump();
+                        }
                     }
                 }
             }
@@ -298,6 +302,7 @@
                     renderRText(`Last Round\n${previousScores}`);
                 }
                 player.alive = true
+                readGamepad();
             }
 
             function renderLText(theText) {
