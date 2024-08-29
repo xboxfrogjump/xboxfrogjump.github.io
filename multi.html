@@ -42,25 +42,25 @@
             var canvas = document.getElementById('gameCanvas');
             var ctx = canvas.getContext('2d');
             const socket = io('https://wandering-tinted-price.glitch.me');
-            let gameLoop; // stores animation frame
-
-            // Preload images for later use
+			let gameLoop; // stores animation frame
+			
+			// preload some images for later use
             var lilyPadImage = new Image()
-            lilyPadImage.src = 'lilyPad.png';
-            var backgroundImage = new Image()
-            backgroundImage.src = 'backdrop.png';
-            var cloudLayer1 = new Image()
-            cloudLayer1.src = 'L1.png';
-            var cloudLayer2 = new Image()
-            cloudLayer2.src = 'L2.png';
-            var cloudLayer3 = new Image()
-            cloudLayer3.src = 'L3.png';
-            var frogImages = [];
-            for (var i = 0; i<5; i++){
-                var tempFrog = new Image()
-                tempFrog.src = 'frog'+i+'.png'
-                frogImages.push(tempFrog)
-            }
+			lilyPadImage.src = 'lilyPad.png';
+			var backgroundImage = new Image()
+			backgroundImage.src = 'backdrop.png';
+			var cloudLayer1 = new Image()
+			cloudLayer1.src = 'L1.png';
+			var cloudLayer2 = new Image()
+			cloudLayer2.src = 'L2.png';
+			var cloudLayer3 = new Image()
+			cloudLayer3.src = 'L3.png';
+			var frogImages = [];
+			for (var i = 0; i<5; i++){
+				var tempFrog = new Image()
+				tempFrog.src = 'frog'+i+'.png'
+				frogImages.push(tempFrog)
+			}
 
             var state = "";
             var lilyPads = [];
@@ -75,12 +75,12 @@
                 onPad: true,
                 score: 0,
                 frogImage: null,
-                alive: true
+				alive: true
             };
             var players = {};
             var musicStarted = false;
-            var groundLevel = canvas.height - 100;
-            var scoredLilyPads = new Set();
+			var groundLevel = canvas.height - 100;
+			var scoredLilyPads = new Set();
 
             // Variables for scrolling background
             var backgroundX = 0;
@@ -90,11 +90,12 @@
 
             // Handle server state updates
             socket.on('serverUpdate', function (st) {
+				console.log("Server state: "+st.state)
                 state = st.state;
                 if (state === "game") {
                     startGame();
                 } else if (state === "lobby") {
-                    cancelAnimationFrame(gameLoop)
+					cancelAnimationFrame(gameLoop)
                     loadLobby();
                 } else if (state === "countdown") {
                     startCountdown();
@@ -104,6 +105,8 @@
             // Handle player updates
             socket.on('updatePlayers', function (playersData) {
                 players = playersData;
+				//console.log("Working with: "+players[socket.id])
+				//console.log(players)
                 if (state === "game") {
                     updateGame();
                 } else if (state === "lobby") {
@@ -116,8 +119,8 @@
                 lilyPads = pads;
                 drawLilyPads();
             });
-
-            // Gamepad event listeners
+			
+			// Gamepad event listeners
             window.addEventListener("gamepadconnected", function(e) {
                 console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
                             e.gamepad.index, e.gamepad.id,
@@ -150,9 +153,11 @@
 
             // Function to start the game
             function startGame() {
+                // Reset game state for the player
                 player.velocityY = 0;
                 player.onPad = true;
                 player.score = 0;
+                // Start the game loop
                 gameLoop = requestAnimationFrame(updateGame);
             }
 
@@ -164,17 +169,17 @@
             }
 
             function startCountdown() {
-                player.x = 50
-                player.alive = true;
-                player.y = 450
-                player.jumpPower = -15
-                player.velocityY = 0
-                player.score = 0
-                player.onPad = true
-                updateScoreDisplay()
-                scoredLilyPads = new Set();
-                players = []
-
+				player.x = 50
+				player.alive = true;
+		        player.y = 450
+		        player.jumpPower = -15
+		        player.velocityY = 0
+				player.score = 0
+		        player.onPad = true
+				updateScoreDisplay()
+				scoredLilyPads = new Set();
+				players = []
+				
                 var countdown = 3;
                 let countdownInterval = setInterval(() => {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -214,10 +219,9 @@
                 drawLilyPads();
                 drawFrog();
                 drawOtherPlayers();
-                reportMovement();
-
-                // Read gamepad input
-                readGamepad();
+				reportMovement();
+				
+				readGamepad();
 
                 // Request next frame update
                 gameLoop = requestAnimationFrame(updateGame);
@@ -241,10 +245,11 @@
 
             function drawLilyPads() {
                 lilyPads.forEach((pad) => {
-                    ctx.drawImage(lilyPadImage, pad.x, pad.y, pad.width, pad.height);
+					ctx.drawImage(lilyPadImage, pad.x, pad.y, pad.width, pad.height);
+					//ctx.fillStyle = 'darkgreen';
+                    //ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
                 });
             }
-            
             function drawFrog() {
                 if (player.frogImage) {
                     ctx.drawImage(player.frogImage, player.x, player.y, player.width, player.height);
@@ -253,12 +258,17 @@
                     ctx.fillRect(player.x, player.y, player.width, player.height);
                 }
             }
-
             function drawOtherPlayers() {
                 Object.keys(players).forEach(function(id) {
                     var p = players[id];
                     if (p.id !== player.id) {
-                        ctx.drawImage(frogImages[p.id], p.x, p.y, player.width, player.height);
+						//console.log("Attempting to draw other frog")
+						//console.log("My player id: "+player.id)
+						//console.log("I'm logging: ")
+						//console.log(p)
+						ctx.drawImage(frogImages[p.id], p.x, p.y, player.width, player.height);
+                        //ctx.fillStyle = 'red';
+                        //ctx.fillRect(p.x, p.y, player.width, player.height);
                     }
                 });
             }
@@ -283,26 +293,28 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(backgroundImage, 0, 0);
                 renderTitle("Game Lobby");
+				//updateScoreDisplay()
                 let playerStatusText = "";
                 for (let id in players) {
+				    //console.log(players[id])
                     playerStatusText += `Player ${id}: ${players[id].ready ? 'Ready' : 'Not Ready'}\n`;
                 }
                 renderLText(playerStatusText);
                 renderPrompt("Press Space Bar, A, or Tap to Ready Up");
-
-                var previousScores = "";
-                var showScores = false;
+				
+				var previousScores = "";
+				var showScores = false;
                 for (let id in players) {
-                    if (players[id].score > 0){
-                        showScores = true;
-                        previousScores += `Player ${id}: ${players[id].score}\n`;
-                    }
+					if (players[id].score > 0){
+						showScores = true;
+						previousScores += `Player ${id}: ${players[id].score}\n`;
+					}
                 }
-                if (showScores){
-                    renderRText(`Last Round\n${previousScores}`);
-                }
-                player.alive = true
-                readGamepad();
+				if (showScores){
+					renderRText(`Last Round\n${previousScores}`);
+				}
+				player.alive = true
+				readGamepad();
             }
 
             function renderLText(theText) {
@@ -313,8 +325,9 @@
                     ctx.fillText(lines[i], 100, 150 + (i * 30));
                 }
             }
-            
-            function renderRText(theText) {
+			
+			function renderRText(theText) {
+                //console.log("rendering: " + theText);
                 ctx.fillStyle = 'black';
                 ctx.font = "30px Arial";
                 var lines = theText.split('\n');
@@ -322,53 +335,61 @@
                     ctx.fillText(lines[i], 600, 150 + (i * 30));
                 }
             }
-            
-            function checkCollision(rect1, rect2) {
-                return rect1.x < rect2.x + rect2.width &&
-                       rect1.x + rect1.width > rect2.x &&
-                       rect1.y + rect2.height > rect2.y &&
-                       rect1.y < rect2.y + rect2.height;
-            }
+			
+			// Function to check collision
+			function checkCollision(rect1, rect2) {
+				return rect1.x < rect2.x + rect2.width &&
+					   rect1.x + rect1.width > rect2.x &&
+					   rect1.y + rect1.height > rect2.y &&
+					   rect1.y < rect2.y + rect2.height;
+			}
+			
+			function reportMovement(){
+				// Emit player movement to the server
+				socket.emit('playerMovement', {
+					id: player.id,
+					x: player.x,
+					y: player.y,
+					velocityY: player.velocityY,
+					onPad: player.onPad,
+					score: player.score,
+					alive: player.alive
+				});
+			}
 
-            function reportMovement(){
-                socket.emit('playerMovement', {
-                    id: player.id,
-                    x: player.x,
-                    y: player.y,
-                    velocityY: player.velocityY,
-                    onPad: player.onPad,
-                    score: player.score,
-                    alive: player.alive
-                });
-            }
-
+            // Check for collisions with lily pads
             function checkCollisions() {
-                player.onPad = false;
-                for (var i = 0; i < lilyPads.length; i++) {
-                    var pad = lilyPads[i]
-                    if (checkCollision(player, pad)) {
-                        if (player.velocityY >= 0) {
-                            player.onPad = true;
-                            player.velocityY = 0;
-                            player.y = pad.y - player.height;
+                player.onPad = false; // Assume player is not on a pad
 
-                            if (!scoredLilyPads.has(pad.id)) {
-                                player.score++;
-                                scoredLilyPads.add(pad.id);
-                                updateScoreDisplay();
-                            }
-                        }
-                        break;
-                    }
-                }
+                for (var i = 0; i < lilyPads.length; i++) {
+				    var pad = lilyPads[i]
+					if (checkCollision(player, pad)) {
+						if (player.velocityY >= 0) {  // Check if the player is falling down onto the pad
+							player.onPad = true;
+							player.velocityY = 0; // Reset velocity
+							player.y = pad.y - player.height; // Adjust player's position to sit on the lily pad
+
+							// Increment score if the player has not yet scored on this pad
+							if (!scoredLilyPads.has(pad.id)) {
+								player.score++;
+								scoredLilyPads.add(pad.id); // Mark this pad as scored
+								updateScoreDisplay(); // Update score display
+							}
+						}
+
+						break; // Stop checking once a collision is found
+					}
+				}
+                // Game over if player falls below the ground level
                 if (player.y > groundLevel) {
                     gameOver();
                 }
             }
 
             function gameOver() {
-                player.alive = false;
-                player.y = canvas.height-75;
+				player.alive = false
+				player.y = canvas.height-75
+                // Reset the music
                 var backgroundMusic = document.getElementById('backgroundMusic');
                 backgroundMusic.pause();
                 backgroundMusic.currentTime = 0;
@@ -379,6 +400,7 @@
                 document.getElementById('score').innerText = "Player "+player.id+" Score: " + player.score;
             }
 
+            // Event listeners for input
             window.addEventListener('keydown', (event) => {
                 if (event.key === ' ') {
                     if (state === "lobby") {
@@ -419,22 +441,27 @@
                     }
                 }
             }
-
+			
+			// Handle current player information
             socket.on('currentPlayer', function (currentPlayer) {
-                if (player.id === null)
-                {
-                    updateScoreDisplay();
-                    player.id = currentPlayer.id;
-                    player.frogImage = frogImages[currentPlayer.id];
-                }
+				if (player.id === null)
+				{
+					console.log("You are Player: " + currentPlayer.id)
+					updateScoreDisplay()
+					player.id = currentPlayer.id
+					player.frogImage = frogImages[currentPlayer.id]
+				}
             });
 
+            // Initialize player frog images
             socket.on('currentPlayers', function(currentPlayers) {
                 players = currentPlayers;
                 player.id = socket.id;
-
+				
+				console.log(players[socket.id].frogImage)
                 setFrogImage(players[socket.id].frogImage);
 
+                // Preload images for all existing players
                 Object.keys(players).forEach(function(id) {
                     if (id !== socket.id) {
                         preloadOtherPlayerImage(id, players[id].frogImage);
@@ -442,10 +469,20 @@
                 });
             });
 
+            /*socket.on('newPlayer', function(newPlayer) {
+                players[newPlayer.id] = newPlayer;
+                preloadOtherPlayerImage(newPlayer.id, newPlayer.frogImage);
+            });*/
+
             socket.on('playerMoved', function(movedPlayer) {
                 players[movedPlayer.id] = movedPlayer;
             });
-        });
+
+            socket.on('playerDisconnected', function(playerId) {
+                delete players[playerId];
+            });
+
+        }); // End of DOMContentLoaded event listener
     </script>
 </body>
 </html>
