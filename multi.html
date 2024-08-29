@@ -32,6 +32,7 @@
 <body>
     <div id="score">Score: 0</div>
     <button id="singleplayerButton" style="position: absolute; right: 10px; top: 60px; padding: 10px 20px; font-size: 16px; cursor: pointer;" onclick="window.location.href='index.html'">Singleplayer</button>
+    <button id="resetButton" style="position: absolute; right: 10px; top: 110px; padding: 10px 20px; font-size: 16px; cursor: pointer;" onclick="kickall()">Reset</button>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <button id="musicToggle">Toggle Music</button>
     <audio id="backgroundMusic" loop>
@@ -454,26 +455,10 @@
 				}
             });
 
-            /*// Initialize player frog images
-            socket.on('currentPlayers', function(currentPlayers) {
-                players = currentPlayers;
-                player.id = socket.id;
-				
-				console.log(players[socket.id].frogImage)
-                setFrogImage(players[socket.id].frogImage);
-
-                // Preload images for all existing players
-                Object.keys(players).forEach(function(id) {
-                    if (id !== socket.id) {
-                        preloadOtherPlayerImage(id, players[id].frogImage);
-                    }
-                });
-            });*/
-
-            /*socket.on('newPlayer', function(newPlayer) {
-                players[newPlayer.id] = newPlayer;
-                preloadOtherPlayerImage(newPlayer.id, newPlayer.frogImage);
-            });*/
+            function kickall(){	socket.emit('kickall'); }
+	    socket.on('kick', function(newPlayer) {
+                window.location.replace("https://xboxfrogjump.github.io");
+            });
 
             socket.on('playerMoved', function(movedPlayer) {
                 players[movedPlayer.id] = movedPlayer;
