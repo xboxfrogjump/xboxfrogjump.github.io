@@ -166,7 +166,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(backgroundImage, 0, 0);
                 renderTitle("Game Lobby");
-                renderPrompt("Press Space Bar, A, or Tap to Ready Up");
+                renderPrompt("Press Space Bar, A Button, R Trigger, or Tap to Ready Up");
             }
 
             function startCountdown() {
@@ -301,7 +301,7 @@
                     playerStatusText += `Player ${id}: ${players[id].ready ? 'Ready' : 'Not Ready'}\n`;
                 }
                 renderLText(playerStatusText);
-                renderPrompt("Press Space Bar, A, or Tap to Ready Up");
+                renderPrompt("Press Space Bar, A Button, R Trigger, or Tap to Ready Up");
 				
 				var previousScores = "";
 				var showScores = false;
