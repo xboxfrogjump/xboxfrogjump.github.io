@@ -275,6 +275,15 @@
             function drawOtherPlayers(deltaTime) {
                 Object.keys(players).forEach(function(id) {
                     var p = players[id];
+			
+		    // Initialize currentPosition and targetPosition if not defined
+		    if (!p.currentPosition) {
+		        p.currentPosition = { x: p.x, y: p.y };
+	            }
+		    if (!p.targetPosition) {
+		        p.targetPosition = { x: p.x, y: p.y };
+		    }
+			
                     if (p.id !== player.id) {
                         interpolatePlayerMovement(p, deltaTime);
                         ctx.drawImage(frogImages[p.id], p.currentPosition.x, p.currentPosition.y, player.width, player.height);
