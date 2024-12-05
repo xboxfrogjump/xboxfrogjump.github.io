@@ -400,7 +400,16 @@
 
             function updateScoreDisplay() {
                 document.getElementById('score').innerText = "Player "+player.id+" Score: " + player.score;
+		if (player.score > 69) {
+        flashBackground(); // Flash background when score exceeds 69
+    }
             }
+	    function flashBackground() {
+    document.body.style.backgroundColor = "pink"; // Change background to pink
+    setTimeout(() => {
+        document.body.style.backgroundColor = ""; // Reset background after 500ms
+    }, 500);
+}
 
             // Event listeners for input
             window.addEventListener('keydown', (event) => {
