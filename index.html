@@ -369,7 +369,12 @@ var lilyPadImage = new Image();
 lilyPadImage.src = 'lilyPad.png';
 
 var frogImage = new Image();
-frogImage.src = 'frog.png';
+var today = new Date();
+if (today.getMonth() === 11 && today.getDate() === 25) { // December 25th
+    frogImage.src = 'frog-christmas.png';
+} else {
+    frogImage.src = 'frog.png';
+}
 
 var backgroundImage = new Image();
 backgroundImage.src = 'backdrop.png';
